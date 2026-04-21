@@ -1,4 +1,7 @@
-FROM debian:trixie-backports@sha256:5e0a9a6b37a45e5183c77af0ccd051d78e07dd8d779eec30789c8cfb8acf0b9f AS builder
+FROM debian:trixie-slim@sha256:4ffb3a1511099754cddc70eb1b12e50ffdb67619aa0ab6c13fcd800a78ef7c7a AS trixie-slim-backports
+RUN echo "deb http://deb.debian.org/debian trixie-backports main" > /etc/apt/sources.list.d/backports.list
+
+FROM trixie-slim-backports AS builder
 ARG VERSION
 
 RUN <<"EOF"
@@ -39,7 +42,7 @@ RUN ./configure \
 RUN make
 RUN make install DESTDIR=/build/output
 
-FROM debian:trixie-slim@sha256:4ffb3a1511099754cddc70eb1b12e50ffdb67619aa0ab6c13fcd800a78ef7c7a
+FROM trixie-slim-backports AS runner
 
 RUN <<"EOF"
 set -eux
@@ -56,7 +59,7 @@ apt-get install -y --no-install-recommends \
     libvorbis0a \
     libxml2  \
     libxslt1.1 \
-    libigloo0t64 \
+    libigloo0t64/trixie-backports \
     librhash1
 rm -rf /var/lib/apt/lists/*
 EOF
