@@ -1,4 +1,4 @@
-FROM debian:trixie-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885 AS builder
+FROM debian:trixie-backports@sha256:5e0a9a6b37a45e5183c77af0ccd051d78e07dd8d779eec30789c8cfb8acf0b9f AS builder
 ARG VERSION
 
 RUN <<"EOF"
@@ -21,10 +21,8 @@ apt-get install -y --no-install-recommends \
     libvorbis-dev \
     libxml2-dev \
     libxslt1-dev \
-    $(if [ $VERSION = "2.5.0" ]; then echo \
-    libigloo-dev \
-    librhash-dev \
-    ; fi)
+    libigloo-dev/trixie-backports \
+    librhash-dev
 rm -rf /var/lib/apt/lists/*
 EOF
 
@@ -41,7 +39,7 @@ RUN ./configure \
 RUN make
 RUN make install DESTDIR=/build/output
 
-FROM debian:trixie-slim@sha256:4bcb9db66237237d03b55b969271728dd3d955eaaa254b9db8a3db94550b1885
+FROM debian:trixie-slim@sha256:4ffb3a1511099754cddc70eb1b12e50ffdb67619aa0ab6c13fcd800a78ef7c7a
 
 RUN <<"EOF"
 set -eux
@@ -58,10 +56,8 @@ apt-get install -y --no-install-recommends \
     libvorbis0a \
     libxml2  \
     libxslt1.1 \
-    $(if [ $VERSION = "2.5.0" ]; then echo \
     libigloo0t64 \
-    librhash1 \
-    ; fi)
+    librhash1
 rm -rf /var/lib/apt/lists/*
 EOF
 
