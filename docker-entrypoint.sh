@@ -1,7 +1,7 @@
 #!/bin/sh
 
 edit_icecast_config() {
-  xml-edit "$@" /etc/icecast.xml
+  xml-edit "$@" /etc/icecast-cfg.xml
 }
 
 if [ -n "$ICECAST_SOURCE_PASSWORD" ]; then
